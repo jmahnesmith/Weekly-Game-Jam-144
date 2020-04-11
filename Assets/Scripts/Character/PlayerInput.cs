@@ -9,13 +9,13 @@ public class PlayerInput : MonoBehaviour
     public float Vertical { get; private set; }
     public bool Jumping { get; private set; }
 
-    public static event Action OnJump;
+    public event Action OnJump;
 
     private void Update()
     {
         Horizontal = Input.GetAxis("Horizontal");
         Vertical = Input.GetAxis("Vertical");
-        Jumping = Input.GetKeyDown(KeyCode.Space);
+        Jumping = Input.GetKey(KeyCode.Space);
 
         if(Jumping && OnJump != null)
         {
