@@ -6,13 +6,20 @@ using UnityEngine;
 public class AnimationController : MonoBehaviour
 {
     public PlayerInput input;
-    public string spriteSheetName;
+    public Player player;
+    public EndOfLevel levelManager;
     private Animator animator;
+    public PlayerSprites currSprite;
     
     private void Awake()
     {
         animator = GetComponent<Animator>();
     }
+
+    private void Start()
+    {
+    }
+
 
     private void Update()
     {
@@ -21,18 +28,40 @@ public class AnimationController : MonoBehaviour
             animator.SetBool("isRunning", false);
         }
         else
-        {
             animator.SetBool("isRunning", true);
+        
+
+        if (input.Jumping)
+        {
+            animator.SetBool("isJumping", true);
         }
+        else
+            animator.SetBool("isJumping", false);
+
+        if (!player.isOnWall && !player.isGrounded)
+        {
+            animator.SetBool("isInAir", true);
+        }
+        else
+            animator.SetBool("isInAir", false);
+
+        if (player.isGrounded && !player.isOnWall)
+        {
+            animator.SetBool("isLanding", true);
+        }
+        else
+            animator.SetBool("isLanding", false);
+
+
     }
     private void LateUpdate()
     {
-        ChangeSprites();
+        ChangeSprites(currSprite);
     }
 
-    private void ChangeSprites()
+    public void ChangeSprites(PlayerSprites spriteSheet)
     {
-        var subSprites = Resources.LoadAll<Sprite>("Sprites/Animations/" + spriteSheetName);
+        var subSprites = Resources.LoadAll<Sprite>("Sprites/Animations/" + spriteSheet.ToString());
 
         foreach(var renderer in GetComponentsInChildren<SpriteRenderer>())
         {
@@ -45,4 +74,11 @@ public class AnimationController : MonoBehaviour
             }
         }
     }
+}
+
+public enum PlayerSprites
+{
+    CharacterHappySheet,
+    CharacterMehSheet,
+    CharacterSadSheet
 }
